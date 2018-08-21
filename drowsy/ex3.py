@@ -13,6 +13,8 @@ import pygame
 import cv2
 from moviepy.editor import *
 # from smsmod import smsmod_send
+import time
+from time import strftime
 
 # loads classifiers ie dataset
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -195,7 +197,25 @@ class Window(QtGui.QMainWindow):
 		btn1.setIconSize(QtCore.QSize(20,20))
 		btn1.resize(btn1.minimumSizeHint())
 		btn1.move(180,85)
+		self.timer = QtCore.QTimer(self)
+		self.timer.timeout.connect(self.tick)
+		self.timer.start(1000)
+ 			
+		
 
+		self.styleChoice = QtGui.QLabel(str(strftime("%A"+' '+"%-d"+' '+"%B"+', '+"%Y")),self)
+		newfont=QtGui.QFont("Ubuntu Mono", 20,weight=QtGui.QFont.Bold) 
+		self.styleChoice.setFont(newfont)
+		self.styleChoice.setStyleSheet("color: #FFD700	")
+		self.styleChoice.setGeometry(QtCore.QRect(365,110,900,300))
+
+		self.styleChoice = QtGui.QLabel(str(strftime("%-I"+":"+"%M"+":"+"%S"+" "+"%p")),self)
+		newfont=QtGui.QFont("Ubuntu Mono", 60,weight=QtGui.QFont.Bold) 
+		self.styleChoice.setFont(newfont)
+		self.styleChoice.setStyleSheet("color: #FFD700	")
+		self.styleChoice.setGeometry(QtCore.QRect(360,60,900,300))
+	
+		 
 		btn1 = QtGui.QPushButton(self)
 		btn1.clicked.connect(lambda: webbrowser.open('https://www.google.com/chrome/'))
 		btn1.setIcon(QtGui.QIcon('chrome.png'))
@@ -273,6 +293,9 @@ class Window(QtGui.QMainWindow):
 	   
 		self.show()
 
+	def tick(self):
+		self.styleChoice.setText(strftime("%-I"+":"+"%M"+":"+"%S"+" "+"%p"))
+		# self.styleChoice.setText(strftime("%d"+' '+"%B"+' '+"%Y"))
 
 	
 	def brow(self):
@@ -310,8 +333,8 @@ class Window(QtGui.QMainWindow):
 		# fnamespl = self.filename.split('/')
 		# file=fnamespl[-1]
 		# pygame.mixer.music.load("1.wav")
-		pygame.mixer.music.load("{}".format(self.filename))
-		print "dfgdgg",file
+		pygame.mixer.music.load("/media/pc45/DATA/StudentProjects/drowsinessdetect/drowsy/1.wav")
+		# print "dfgdgg",file
 		# winsound.Beep(1500, 250)
 		pygame.mixer.music.play()
 		self.close_application()
@@ -414,9 +437,11 @@ class Window(QtGui.QMainWindow):
 
 	
 	def play_video(self):
+		self.filename = QtGui.QFileDialog.getOpenFileName(self,'Open .wav files',"","*.*")
 		pygame.display.set_caption('Video Player')
 
 		clip = VideoFileClip("{}".format(self.filename))
+		clip = clip.resize (height=500,width=500)
 		clip.preview()
 
 		pygame.quit()
